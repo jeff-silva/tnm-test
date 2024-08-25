@@ -1,6 +1,6 @@
 <template>
   <div class="pa-4">
-    <v-row>
+    <!-- <v-row>
       <template v-for="o in dimonaProducts.response.data">
         <v-col cols="3">
           <div class="border">
@@ -17,7 +17,7 @@
         </v-col>
       </template>
     </v-row>
-    <br />
+    <br /> -->
 
     <v-table class="border">
       <colgroup>
@@ -71,8 +71,8 @@
 <script setup>
 import _ from "lodash";
 
-import DimonaProductModel from "@/schema/DimonaProductModel.js";
-const dimonaProducts = DimonaProductModel.search();
+// import DimonaProductModel from "@/schema/DimonaProductModel.js";
+// const dimonaProducts = DimonaProductModel.search();
 
 // const dimonaProducts = useAxios({
 //   autoSubmit: true,

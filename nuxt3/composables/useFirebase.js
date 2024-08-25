@@ -1,6 +1,10 @@
 /**
  * 1) Crie seu projeto em https://console.firebase.google.com/
- * Crie uma configuração web
+ * - Crie uma configuração web
+ * - Crie database Firestore
+ * - Setar regras para "allow read, write: if true;"
+ * - Crie Storage
+ * - Setar regras para "allow read, write: if true;"
  *
  * 2) Copie o arquivo /nuxt3/.env.example para /nuxt3/.env
  * Configure os atributos conforme o projeto criado no firebase
@@ -155,25 +159,45 @@ export default () => {
   };
 
   // Storage upload
-  r.storageUpload = reactive({
-    busy: false,
-    lastUploads: [],
-    async submit(file) {
-      r.storageUpload.busy = true;
+  r.storageUpload = (options = {}) => {
+    options = {
+      onSuccess: (uploadData) => null,
+      ...options,
+    };
 
-      const storage = fireStorage.getStorage();
-      const snapshot = await fireStorage.uploadBytes(
-        fireStorage.ref(storage, file.name),
-        file
-      );
+    const r = reactive({
+      busy: false,
+      lastUploads: [],
+      async browse() {
+        Object.assign(document.createElement("input"), {
+          type: "file",
+          onchange(ev) {
+            if (!ev.target.files[0]) return;
+            r.submit(ev.target.files[0]);
+          },
+        }).click();
+      },
+      async submit(file) {
+        r.busy = true;
 
-      const uploadData = await storeUploadData(snapshot.ref);
-      r.storageUpload.lastUploads.push(uploadData);
-      r.storageUpload.busy = false;
+        const storage = fireStorage.getStorage();
+        const snapshot = await fireStorage.uploadBytes(
+          fireStorage.ref(storage, file.name),
+          file
+        );
 
-      return uploadData;
-    },
-  });
+        const uploadData = await storeUploadData(snapshot.ref);
+        options.onSuccess(uploadData);
+        r.lastUploads.push(uploadData);
+        r.busy = false;
+
+        return uploadData;
+      },
+      ...options,
+    });
+
+    return r;
+  };
 
   // Storage files list
   r.storageList = reactive({
@@ -248,8 +272,7 @@ export default () => {
 
     const r = reactive({
       busy: false,
-      collection: options.collection,
-      data: options.data,
+      ...options,
       error: null,
       submit() {
         return new Promise(async (resolve, reject) => {
@@ -282,9 +305,20 @@ export default () => {
           r.busy = false;
         });
       },
-      dataClear() {
-        r.data = {};
-        console.log("aaaa");
+      async dataClear() {
+        for (let i in r.data) {
+          if (Array.isArray(r.data[i])) {
+            r.data[i] = [];
+            continue;
+          }
+
+          if (typeof r.data[i] == "object" && r.data[i] !== null) {
+            r.data[i] = {};
+            continue;
+          }
+
+          r.data[i] = null;
+        }
       },
     });
 
@@ -295,6 +329,7 @@ export default () => {
     options = {
       collection: null,
       params: { limit: 5, startAfter: null },
+      responseParse: (data) => data,
       ...options,
     };
 
@@ -340,10 +375,10 @@ export default () => {
 
               if (r.params.startAfter) {
                 docsRefData.map((docsRefDataItem) => {
-                  r.data.push(docsRefDataItem);
+                  r.data.push(options.responseParse(docsRefDataItem));
                 });
               } else {
-                r.data = docsRefData;
+                r.data = docsRefData.map((item) => options.responseParse(item));
               }
             } catch (err) {
               reject((r.error = err.message));
@@ -358,7 +393,11 @@ export default () => {
     return r;
   };
 
-  r.firestoreDelete = reactive({});
+  // r.firestoreDelete = (options = {}) => {
+  //   return reactive({
+  //     async submit() {},
+  //   });
+  // };
 
   return r;
 };
