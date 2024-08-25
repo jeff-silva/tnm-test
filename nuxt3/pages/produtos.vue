@@ -1,5 +1,24 @@
 <template>
   <div class="pa-4">
+    <v-row>
+      <template v-for="o in dimonaProducts.response.data">
+        <v-col cols="3">
+          <div class="border">
+            <div class="pa-3">{{ o.name }}</div>
+            <v-btn
+              block
+              text="Dimona"
+              color="primary"
+              :href="o.dimonaUrl"
+              target="_blank"
+              rounded="0"
+            />
+          </div>
+        </v-col>
+      </template>
+    </v-row>
+    <br />
+
     <v-table class="border">
       <colgroup>
         <col width="*" />
@@ -33,22 +52,54 @@
           <td></td>
           <td colspan="2">
             <v-btn
-              text="Enviar pedito"
               block
+              text="Enviar pedito"
+              :loading="dimonaOrder.busy"
               @click="dimonaOrder.submit()"
             />
           </td>
         </tr>
       </tfoot>
     </v-table>
-    <pre>products: {{ products }}</pre>
-    <pre>dimonaOrder: {{ dimonaOrder }}</pre>
-    <!-- <pre>req: {{ req }}</pre> -->
+
+    <!-- <pre>products: {{ products }}</pre> -->
+    <!-- <pre>dimonaOrder: {{ dimonaOrder }}</pre> -->
+    <!-- <pre>dimonaProducts: {{ dimonaProducts }}</pre> -->
   </div>
 </template>
 
 <script setup>
 import _ from "lodash";
+
+import DimonaProductModel from "@/schema/DimonaProductModel.js";
+const dimonaProducts = DimonaProductModel.search();
+
+// const dimonaProducts = useAxios({
+//   autoSubmit: true,
+//   method: "post",
+//   url: "dimona://api/backend/products/filtered",
+//   params: { page: 1 },
+//   data: {
+//     search: null,
+//     categories: [],
+//     collections: [],
+//     colors: [],
+//     sizes: [],
+//     customizable: "only",
+//     order_by: "sales",
+//     per_page: 100,
+//   },
+//   response: {
+//     data: [],
+//   },
+//   responseParse(data) {
+//     data.data = data.data.map((prod) => {
+//       prod.dimonaUrl = `https://camisadimona.com.br/produto/${prod.slug}/`;
+//       return prod;
+//     });
+//     return data;
+//   },
+// });
 
 const products = reactive({
   filter: {
@@ -77,10 +128,7 @@ const products = reactive({
 
 const dimonaOrder = useAxios({
   method: "post",
-  url: "https://camisadimona.com.br/api/v2/order",
-  headers: {
-    "api-key": "44eb51cca73a4ee1f2e67ba1414afd62",
-  },
+  url: "dimona://api/v2/order",
   productAdd(product) {
     if (!product.sku) return;
 
@@ -108,7 +156,7 @@ const dimonaOrder = useAxios({
   data: {
     shipping_speed: "pac",
     delivery_method_id: "177",
-    order_id: "order-001",
+    // order_id: "order-001",
     customer_name: "Fulano da Silva",
     customer_document: "123.456.789-13",
     customer_email: "exemplo@gmail.com",
@@ -159,10 +207,4 @@ const dimonaOrder = useAxios({
     },
   },
 });
-
-// const req = useAxios({
-//   url: "https://jsonplaceholder.typicode.com/todos/1",
-//   autoSubmit: true,
-//   response: {},
-// });
 </script>

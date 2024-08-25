@@ -13,9 +13,22 @@ export default (options = {}) => {
       autoSubmit: false,
       beforeSubmit: (self) => null,
       responseParse: (data) => data,
+      onSuccess: (data) => data,
+      onError: (data) => data,
     },
     options
   );
+
+  const conf = useRuntimeConfig();
+
+  const presets = {
+    "dimona://": {
+      baseURL: "https://camisadimona.com.br",
+      headers: {
+        "api-key": conf.public.DIMONA_API_KEY,
+      },
+    },
+  };
 
   const r = reactive({
     busy: false,
@@ -61,13 +74,22 @@ export default (options = {}) => {
           }
         }
 
+        for (let prefix in presets) {
+          if (axiosOptions.url.startsWith(prefix)) {
+            axiosOptions.url = axiosOptions.url.replace(prefix, "");
+            axiosOptions = _.merge(axiosOptions, presets[prefix]);
+          }
+        }
+
         try {
           const resp = await axios(axiosOptions);
           r.ready = true;
           r.response = r.responseParse(resp.data);
+          options.onSuccess(resp);
           resolve(resp);
         } catch (err) {
           r.error.set(err.code, err.message);
+          options.onError(r.error);
           reject(r.error);
         }
 
