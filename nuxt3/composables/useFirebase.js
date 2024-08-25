@@ -177,22 +177,55 @@ export default () => {
           },
         }).click();
       },
-      async submit(file) {
-        r.busy = true;
+      submit(file) {
+        return new Promise((resolve, reject) => {
+          r.busy = true;
+          let reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = async (readerEvt) => {
+            try {
+              let base64String = btoa(readerEvt.target.result);
+              const storage = fireStorage.getStorage();
 
-        const storage = fireStorage.getStorage();
-        const snapshot = await fireStorage.uploadBytes(
-          fireStorage.ref(storage, file.name),
-          file
-        );
+              const snapshot = await fireStorage.uploadBytes(
+                fireStorage.ref(storage, file.name),
+                file
+              );
 
-        const uploadData = await storeUploadData(snapshot.ref);
-        options.onSuccess(uploadData);
-        r.lastUploads.push(uploadData);
-        r.busy = false;
+              // const snapshot = await fireStorage.uploadString(
+              //   fireStorage.ref(storage, file.name),
+              //   base64String,
+              //   "base64url"
+              // );
 
-        return uploadData;
+              const uploadData = await storeUploadData(snapshot.ref);
+              options.onSuccess(uploadData);
+              r.lastUploads.push(uploadData);
+              resolve(uploadData);
+            } catch (err) {
+              reject(err);
+            }
+
+            r.busy = false;
+          };
+        });
       },
+      // async submit(file) {
+      //   r.busy = true;
+
+      //   const storage = fireStorage.getStorage();
+      //   const snapshot = await fireStorage.uploadBytes(
+      //     fireStorage.ref(storage, file.name),
+      //     file
+      //   );
+
+      //   const uploadData = await storeUploadData(snapshot.ref);
+      //   options.onSuccess(uploadData);
+      //   r.lastUploads.push(uploadData);
+      //   r.busy = false;
+
+      //   return uploadData;
+      // },
       ...options,
     });
 

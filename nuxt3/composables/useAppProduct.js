@@ -10,6 +10,7 @@ export default () => {
       data.name = data.name ?? null;
       data.sku = data.sku ?? null;
       data.thumbnail = data.thumbnail ?? null;
+      data.active = data.active ?? null;
       return data;
     },
   });
@@ -21,6 +22,7 @@ export default () => {
       name: null,
       sku: null,
       thumbnail: null,
+      active: null,
     },
     thumbnail: fire.storageUpload({
       onSuccess(uploadData) {
