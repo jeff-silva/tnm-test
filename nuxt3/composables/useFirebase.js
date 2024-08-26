@@ -446,6 +446,63 @@ export default () => {
     return r;
   };
 
+  r.firestoreFind = (options = {}) => {
+    options = {
+      collection: null,
+      params: { where: "id", value: null },
+      responseParse: (data) => data,
+      ...options,
+    };
+
+    const r = reactive({
+      ...options,
+      busy: false,
+      data: false,
+      error: null,
+      async find(value, field = "id") {
+        r.params.where = field;
+        r.params.value = value;
+        r.submit();
+      },
+      submit() {
+        return new Promise(async (resolve, reject) => {
+          r.busy = true;
+
+          setTimeout(async () => {
+            try {
+              const db = useFirestore();
+              const collection = fireFirestore.collection(
+                db,
+                options.collection
+              );
+
+              let queryParams = [
+                collection,
+                fireFirestore.orderBy("updatedAt", "desc"),
+                fireFirestore.limit(r.params.limit),
+              ];
+
+              const q = fireFirestore.query(
+                collection,
+                fireFirestore.where(r.params.where, "==", r.params.value)
+              );
+              const items = await fireFirestore.getDocs(q);
+              if (items.docs[0]) {
+                r.data = items.docs[0].data();
+              }
+            } catch (err) {
+              reject((r.error = err.message));
+            }
+
+            r.busy = false;
+          }, 100);
+        });
+      },
+    });
+
+    return r;
+  };
+
   // r.firestoreDelete = (options = {}) => {
   //   return reactive({
   //     async submit() {},

@@ -21,7 +21,7 @@ export default (options = {}) => {
 
   const conf = useRuntimeConfig();
 
-  const presets = {
+  const PRESETS = {
     "dimona://": {
       baseURL: "https://camisadimona.com.br",
       headers: {
@@ -90,10 +90,10 @@ export default (options = {}) => {
           }
         }
 
-        for (let prefix in presets) {
+        for (let prefix in PRESETS) {
           if (axiosOptions.url.startsWith(prefix)) {
             axiosOptions.url = axiosOptions.url.replace(prefix, "");
-            axiosOptions = _.merge(axiosOptions, presets[prefix]);
+            axiosOptions = _.merge(axiosOptions, PRESETS[prefix]);
           }
         }
 

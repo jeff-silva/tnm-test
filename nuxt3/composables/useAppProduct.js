@@ -1,6 +1,13 @@
 export default () => {
-  const fire = useFirebase();
+  const DATA_DEFAULT = {
+    id: null,
+    name: null,
+    sku: null,
+    thumbnail: null,
+    active: null,
+  };
 
+  const fire = useFirebase();
   let r = {};
 
   r.list = fire.firestoreList({
@@ -8,6 +15,7 @@ export default () => {
     responseParse(data) {
       data.id = data.id ?? null;
       data.name = data.name ?? null;
+      data.slug = data.slug ?? null;
       data.sku = data.sku ?? null;
       data.thumbnail = data.thumbnail ?? null;
       data.active = data.active ?? null;
@@ -15,15 +23,13 @@ export default () => {
     },
   });
 
-  r.save = fire.firestoreSave({
+  r.find = fire.firestoreFind({
     collection: "product",
-    data: {
-      id: null,
-      name: null,
-      sku: null,
-      thumbnail: null,
-      active: null,
-    },
+  });
+
+  r.save = fire.firestoreFind({
+    collection: "product",
+    data: DATA_DEFAULT,
     thumbnail: fire.storageUpload({
       onSuccess(uploadData) {
         console.log(uploadData);
