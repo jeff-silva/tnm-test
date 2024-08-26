@@ -7,7 +7,11 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      DIMONA_API_KEY: process.env.DIMONA_API_KEY
+      DIMONA_API_KEY: process.env.DIMONA_API_KEY,
+      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+      STRIPE_PRIVATE_KEY: process.env.STRIPE_PRIVATE_KEY,
+      PAGBANK_PUBLIC_KEY: process.env.PAGBANK_PUBLIC_KEY,
+      PAGBANK_SANDBOX_PUBLIC_KEY: process.env.PAGBANK_SANDBOX_PUBLIC_KEY,
     },
   },
 
@@ -29,5 +33,21 @@ export default defineNuxtConfig({
         measurementId: process.env.FIREBASE_MEASUREMENT_ID,
       },
     }],
+
+    // // https://nuxt.com/modules/stripe
+    // ['nuxt-stripe-module', {
+    //   publishableKey: process.env.STRIPE_PUBLIC_KEY,
+    // }],
+
+    // ['@unlok-co/nuxt-stripe', {
+    //   server: {
+    //     key: null,
+    //     options: {},
+    //   },
+    //   client: {
+    //     key: process.env.STRIPE_PUBLIC_KEY,
+    //     options: {},
+    //   },
+    // }],
   ],
 })

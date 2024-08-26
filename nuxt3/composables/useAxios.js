@@ -28,6 +28,22 @@ export default (options = {}) => {
         "api-key": conf.public.DIMONA_API_KEY,
       },
     },
+    "pagseguro://": {
+      baseURL:
+        "https://thingproxy.freeboard.io/fetch/https://api.pagseguro.com",
+      headers: {
+        Authorization: `Bearer ${conf.public.PAGBANK_PUBLIC_KEY}`,
+        "Content-type": "application/json",
+      },
+    },
+    "pagseguro-sandbox://": {
+      baseURL:
+        "https://thingproxy.freeboard.io/fetch/https://sandbox.api.pagseguro.com",
+      headers: {
+        Authorization: `Bearer ${conf.public.PAGBANK_SANDBOX_PUBLIC_KEY}`,
+        "Content-type": "application/json",
+      },
+    },
   };
 
   const r = reactive({
@@ -88,7 +104,11 @@ export default (options = {}) => {
           options.onSuccess(resp);
           resolve(resp);
         } catch (err) {
-          r.error.set(err.code, err.message);
+          r.error.set(
+            err.code,
+            err.message,
+            err.response ? err.response.data : {}
+          );
           options.onError(r.error);
           reject(r.error);
         }
