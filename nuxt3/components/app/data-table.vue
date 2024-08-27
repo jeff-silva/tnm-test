@@ -33,7 +33,10 @@
         <tr>
           <template v-for="oo in propsHeaders()">
             <td>
-              <slot :name="oo.field ? `row:${oo.field}` : null">
+              <slot
+                :name="oo.field ? `item:${oo.field}` : null"
+                v-bind="scope({ item: o.item })"
+              >
                 {{ oo.field ? o.item[oo.field] : null }}
               </slot>
             </td>
@@ -72,7 +75,15 @@ const propsHeaders = (merge = {}) => {
 };
 
 const propsActions = (merge = {}) => {
-  return props.actions(scope(merge));
+  return props
+    .actions(scope(merge))
+    .map((item) => {
+      if (item.showIf && typeof item.showIf == "function") {
+        if (!item.showIf()) return null;
+      }
+      return item;
+    })
+    .filter((item) => !!item);
 };
 
 const propsItems = computed(() => {
