@@ -5,40 +5,61 @@
         <v-col cols="6">
           <v-text-field
             label="Nome"
-            v-model="appProduct.save.data.name"
+            v-model="shopProduct.save.data.name"
           />
           <v-text-field
             label="Slug"
-            v-model="appProduct.save.data.slug"
+            v-model="shopProduct.save.data.slug"
           />
           <v-text-field
             label="SKU"
-            v-model="appProduct.save.data.sku"
+            v-model="shopProduct.save.data.sku"
+          />
+          <dimona-product-select
+            label="Referencia produto Dimona"
+            v-model="shopProduct.save.data.dimonaProductSlug"
+            @update:attributes="
+              (attrs) => {
+                shopProduct.save.data.sizes = attrs.sizes;
+                shopProduct.save.data.colors = attrs.colors;
+              }
+            "
+          />
+          <shop-product-attributes-edit
+            label="Cores"
+            type="colors"
+            v-model="shopProduct.save.data.colors"
+          />
+          <shop-product-attributes-edit
+            label="Tamanhos"
+            type="sizes"
+            v-model="shopProduct.save.data.sizes"
           />
           <v-btn
             block
-            @click="appProduct.save.thumbnail.browse()"
+            @click="shopProduct.save.thumbnail.browse()"
             >Upload</v-btn
           >
+
           <br />
           <div class="d-flex justify-end ga-3">
             <v-btn
               text="Limpar"
               @click="
                 async () => {
-                  appProduct.save.dataClear();
+                  shopProduct.save.dataClear();
                 }
               "
             />
             <v-btn
               text="Salvar"
               color="success"
-              :loading="appProduct.save.busy"
+              :loading="shopProduct.save.busy"
               @click="
                 async () => {
-                  await appProduct.save.submit();
-                  await appProduct.list.submit();
-                  await appProduct.save.dataClear();
+                  await shopProduct.save.submit();
+                  await shopProduct.list.submit();
+                  await shopProduct.save.dataClear();
                 }
               "
             />
@@ -46,61 +67,50 @@
         </v-col>
 
         <v-col cols="6">
-          <v-table class="border">
-            <colgroup>
-              <col width="*" />
-              <col width="150px" />
-              <col width="50px" />
-              <!-- <col width="50px" /> -->
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>SKU</th>
-                <th></th>
-                <!-- <th></th> -->
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="o in appProduct.list.data">
-                <tr>
-                  <td>{{ o.name }}</td>
-                  <td>{{ o.sku }}</td>
-                  <td class="pa-0">
-                    <v-btn
-                      rounded="0"
-                      flat
-                      icon="mdi-edit"
-                      @click="appProduct.save.data = { ...o }"
-                    />
-                  </td>
-                  <!-- <td class="pa-0">
-                    <v-btn
-                      rounded="0"
-                      flat
-                      icon="mdi-delete"
-                      @click="appProduct.delete.submit(o)"
-                    />
-                  </td> -->
-                </tr>
-              </template>
-            </tbody>
-          </v-table>
+          <app-data-table
+            :items="shopProduct.list.data"
+            :headers="[
+              { name: 'Nome', field: 'name' },
+              { name: 'SKU', field: 'sku', width: '200px' },
+            ]"
+            :actions="
+              (scope) => [
+                {
+                  text: 'Edit',
+                  color: 'primary',
+                  icon: 'mdi-pen',
+                  onClick() {
+                    shopProduct.save.data = { ...scope.item };
+                  },
+                },
+                {
+                  text: 'Delete',
+                  icon: 'mdi-delete',
+                  color: 'error',
+                  async onClick() {
+                    await shopProduct.delete.delete(scope.item);
+                    await shopProduct.list.submit();
+                  },
+                },
+              ]
+            "
+          />
+
           <br />
           <div class="d-flex justify-end ga-3">
             <v-btn
               text="Buscar"
-              :loading="appProduct.list.busy"
+              :loading="shopProduct.list.busy"
               @click="
                 async () => {
-                  await appProduct.list.submit();
+                  await shopProduct.list.submit();
                 }
               "
             />
           </div>
         </v-col>
       </v-row>
-      <pre>appProduct: {{ appProduct }}</pre>
+      <pre>shopProduct: {{ shopProduct }}</pre>
       <pre>dimonaProduct: {{ dimonaProduct }}</pre>
     </div>
   </nuxt-layout>
@@ -108,9 +118,9 @@
 
 <script setup>
 const dimonaProduct = useDimonaProduct();
-const appProduct = useAppProduct();
+const shopProduct = useShopProduct();
 
 onMounted(() => {
-  appProduct.list.submit();
+  shopProduct.list.submit();
 });
 </script>

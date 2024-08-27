@@ -2,7 +2,7 @@
   <nuxt-layout name="site">
     <v-container>
       <v-row>
-        <template v-for="o in appProduct.list.data">
+        <template v-for="o in shopProduct.list.data">
           <v-col cols="3">
             <div class="rounded border">
               <div
@@ -26,9 +26,9 @@
 </template>
 
 <script setup>
-const appProduct = useAppProduct();
+const shopProduct = useShopProduct();
 
 onMounted(() => {
-  appProduct.list.submit();
+  shopProduct.list.submit();
 });
 </script>

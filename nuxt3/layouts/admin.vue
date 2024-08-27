@@ -15,7 +15,10 @@
         />
       </v-list>
     </div>
-    <div class="flex-grow-1 bg-grey-lighten-4 pa-3">
+    <div
+      class="flex-grow-1 bg-grey-lighten-4 pa-3"
+      style="overflow: auto"
+    >
       <slot></slot>
     </div>
   </div>

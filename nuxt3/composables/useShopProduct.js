@@ -11,7 +11,7 @@ export default () => {
   let r = {};
 
   r.list = fire.firestoreList({
-    collection: "product",
+    collection: "shop_product",
     responseParse(data) {
       data.id = data.id ?? null;
       data.name = data.name ?? null;
@@ -19,16 +19,19 @@ export default () => {
       data.sku = data.sku ?? null;
       data.thumbnail = data.thumbnail ?? null;
       data.active = data.active ?? null;
+      data.dimonaProductSlug = data.dimonaProductSlug ?? null;
+      data.colors = data.colors ?? [];
+      data.sizes = data.sizes ?? [];
       return data;
     },
   });
 
   r.find = fire.firestoreFind({
-    collection: "product",
+    collection: "shop_product",
   });
 
-  r.save = fire.firestoreFind({
-    collection: "product",
+  r.save = fire.firestoreSave({
+    collection: "shop_product",
     data: DATA_DEFAULT,
     thumbnail: fire.storageUpload({
       onSuccess(uploadData) {
@@ -37,9 +40,9 @@ export default () => {
     }),
   });
 
-  // r.delete = r.firestoreDelete({
-  //   collection: "product",
-  // });
+  r.delete = fire.firestoreDelete({
+    collection: "shop_product",
+  });
 
   return r;
 };

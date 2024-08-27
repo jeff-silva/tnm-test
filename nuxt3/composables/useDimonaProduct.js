@@ -28,5 +28,21 @@ export default (options = {}) => {
     },
   });
 
+  r.find = useAxios({
+    ...options,
+    method: "get",
+    response: false,
+    find(slug) {
+      if (!slug) return;
+      r.find.url = `dimona://api/backend/products/${slug}`;
+      setTimeout(() => {
+        r.find.submit();
+      }, 1000);
+    },
+    beforeSubmit() {
+      r.find.response = false;
+    },
+  });
+
   return r;
 };

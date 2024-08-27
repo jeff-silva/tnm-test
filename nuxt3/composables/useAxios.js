@@ -23,28 +23,40 @@ export default (options = {}) => {
 
   const PRESETS = {
     "dimona://": {
-      baseURL: "https://camisadimona.com.br",
+      url: "https://camisadimona.com.br",
       headers: {
         "api-key": conf.public.DIMONA_API_KEY,
       },
     },
     "pagseguro://": {
-      baseURL:
-        "https://thingproxy.freeboard.io/fetch/https://api.pagseguro.com",
+      url: "https://thingproxy.freeboard.io/fetch/https://api.pagseguro.com",
       headers: {
         Authorization: `Bearer ${conf.public.PAGBANK_PUBLIC_KEY}`,
         "Content-type": "application/json",
       },
     },
     "pagseguro-sandbox://": {
-      baseURL:
-        "https://thingproxy.freeboard.io/fetch/https://sandbox.api.pagseguro.com",
+      url: "https://thingproxy.freeboard.io/fetch/https://sandbox.api.pagseguro.com",
       headers: {
         Authorization: `Bearer ${conf.public.PAGBANK_SANDBOX_PUBLIC_KEY}`,
         "Content-type": "application/json",
       },
     },
   };
+
+  const evt = reactive({
+    items: [],
+    on(name, call) {
+      evt.items.push({ name, call });
+    },
+    dispatch(name, args = []) {
+      return evt.items
+        .filter((item) => item.name == name)
+        .map((item) => {
+          return item.call.apply(null, args);
+        });
+    },
+  });
 
   const r = reactive({
     busy: false,
@@ -71,37 +83,54 @@ export default (options = {}) => {
       }
     })(),
 
+    optionsSync() {
+      let optionsSync = {
+        url: r.url,
+        method: r.method,
+        data: r.data,
+        params: r.params,
+        headers: r.headers,
+      };
+
+      for (let i in optionsSync) {
+        if (typeof options[i] == "function") {
+          optionsSync[i] = options[i]();
+        }
+      }
+
+      for (let prefix in PRESETS) {
+        let preset = PRESETS[prefix];
+        if ((optionsSync.url || "").startsWith(prefix)) {
+          optionsSync.url = optionsSync.url.replace(prefix, `${preset.url}/`);
+        }
+      }
+
+      for (let i in optionsSync) {
+        r[i] = optionsSync[i];
+      }
+    },
+
+    on: evt.on,
+    dispatch: evt.dispatch,
+
     submit() {
       return new Promise(async (resolve, reject) => {
+        r.optionsSync();
         r.busy = true;
         r.beforeSubmit(r);
 
-        let axiosOptions = {
-          url: options.url,
-          method: options.method,
-          data: options.data,
-          params: options.params,
-          headers: options.headers,
-        };
-
-        for (let attr in axiosOptions) {
-          if (typeof axiosOptions[attr] == "function") {
-            axiosOptions[attr] = axiosOptions[attr]();
-          }
-        }
-
-        for (let prefix in PRESETS) {
-          if (axiosOptions.url.startsWith(prefix)) {
-            axiosOptions.url = axiosOptions.url.replace(prefix, "");
-            axiosOptions = _.merge(axiosOptions, PRESETS[prefix]);
-          }
-        }
-
         try {
-          const resp = await axios(axiosOptions);
+          const resp = await axios({
+            url: r.url,
+            method: r.method,
+            data: r.data,
+            params: r.params,
+            headers: r.headers,
+          });
           r.ready = true;
           r.response = r.responseParse(resp.data);
           options.onSuccess(resp);
+          r.dispatch("success", [resp]);
           resolve(resp);
         } catch (err) {
           r.error.set(
@@ -110,6 +139,7 @@ export default (options = {}) => {
             err.response ? err.response.data : {}
           );
           options.onError(r.error);
+          r.dispatch("error", [resp]);
           reject(r.error);
         }
 
@@ -122,5 +152,6 @@ export default (options = {}) => {
     r.submit();
   }
 
+  r.optionsSync();
   return r;
 };

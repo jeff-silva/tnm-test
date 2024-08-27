@@ -381,7 +381,7 @@ export default () => {
   r.firestoreList = (options = {}) => {
     options = {
       collection: null,
-      params: { limit: 5, startAfter: null },
+      params: { limit: 20, startAfter: null },
       responseParse: (data) => data,
       ...options,
     };
@@ -503,11 +503,25 @@ export default () => {
     return r;
   };
 
-  // r.firestoreDelete = (options = {}) => {
-  //   return reactive({
-  //     async submit() {},
-  //   });
-  // };
+  r.firestoreDelete = (options = {}) => {
+    options = {
+      collection: null,
+      ...options,
+    };
+
+    const r = reactive({
+      ...options,
+      async delete(data) {
+        const db = useFirestore();
+        return await fireFirestore.deleteDoc(
+          fireFirestore.doc(db, r.collection, data.id)
+        );
+      },
+      async submit() {},
+    });
+
+    return r;
+  };
 
   return r;
 };
