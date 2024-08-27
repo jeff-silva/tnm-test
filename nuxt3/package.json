@@ -22,6 +22,7 @@
     "dayjs": "^1.11.13",
     "firebase": "^10.13.0",
     "lodash": "^4.17.21",
+    "maska": "^3.0.2",
     "stripe": "^16.8.0",
     "vite-plugin-vuetify": "^2.0.4",
     "vuefire": "^3.2.0",

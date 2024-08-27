@@ -3,18 +3,6 @@
     <div>
       <v-row>
         <v-col cols="6">
-          <v-text-field
-            label="Nome"
-            v-model="shopProduct.save.data.name"
-          />
-          <v-text-field
-            label="Slug"
-            v-model="shopProduct.save.data.slug"
-          />
-          <v-text-field
-            label="SKU"
-            v-model="shopProduct.save.data.sku"
-          />
           <dimona-product-select
             label="Referencia produto Dimona"
             v-model="shopProduct.save.data.dimonaProductSlug"
@@ -24,6 +12,18 @@
                 shopProduct.save.data.colors = attrs.colors;
               }
             "
+          />
+          <v-text-field
+            label="Nome"
+            v-model="shopProduct.save.data.name"
+          />
+          <v-text-field
+            label="SKU"
+            v-model="shopProduct.save.data.sku"
+          />
+          <v-money
+            label="Valor"
+            v-model="shopProduct.save.data.amount"
           />
           <shop-product-attributes-edit
             label="Cores"
@@ -110,8 +110,8 @@
           </div>
         </v-col>
       </v-row>
-      <pre>shopProduct: {{ shopProduct }}</pre>
-      <pre>dimonaProduct: {{ dimonaProduct }}</pre>
+      <!-- <pre>shopProduct.save.data: {{ shopProduct.save.data }}</pre> -->
+      <!-- <pre>dimonaProduct: {{ dimonaProduct }}</pre> -->
     </div>
   </nuxt-layout>
 </template>

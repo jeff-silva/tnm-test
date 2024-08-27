@@ -15,7 +15,6 @@ export default () => {
     responseParse(data) {
       data.id = data.id ?? null;
       data.name = data.name ?? null;
-      data.slug = data.slug ?? null;
       data.sku = data.sku ?? null;
       data.thumbnail = data.thumbnail ?? null;
       data.amount = data.amount ?? 0;
