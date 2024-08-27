@@ -1,1 +1,0 @@
-import{_ as e}from"./BG7N9z_6.js";import{_,c,b as t,w as a,n as s,o as r}from"./sq3CTQa_.js";const m={};function d(p,u){const n=s("v-btn"),o=e;return r(),c("div",null,[t(o,{name:"admin"},{default:a(()=>[t(n,{text:"Produtos",to:"/admin/products"})]),_:1})])}const f=_(m,[["render",d]]);export{f as default};
