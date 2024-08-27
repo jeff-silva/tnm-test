@@ -182,6 +182,7 @@ export default () => {
     };
 
     const r = reactive({
+      ...options,
       busy: false,
       lastUploads: [],
       async browse() {
@@ -194,36 +195,52 @@ export default () => {
         }).click();
       },
       submit(file) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
           r.busy = true;
-          let reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = async (readerEvt) => {
-            try {
-              let base64String = btoa(readerEvt.target.result);
-              const storage = fireStorage.getStorage();
 
-              const snapshot = await fireStorage.uploadBytes(
-                fireStorage.ref(storage, file.name),
-                file
-              );
+          const storage = fireStorage.getStorage();
 
-              // const snapshot = await fireStorage.uploadString(
-              //   fireStorage.ref(storage, file.name),
-              //   base64String,
-              //   "base64url"
-              // );
+          const snapshot = await fireStorage.uploadBytes(
+            fireStorage.ref(storage, file.name),
+            file
+          );
 
-              const uploadData = await storeUploadData(snapshot.ref);
-              options.onSuccess(uploadData);
-              r.lastUploads.push(uploadData);
-              resolve(uploadData);
-            } catch (err) {
-              reject(err);
-            }
+          const uploadData = await storeUploadData(snapshot.ref);
+          r.onSuccess(uploadData);
+          r.lastUploads.push(uploadData);
+          resolve(uploadData);
 
-            r.busy = false;
-          };
+          r.busy = false;
+
+          // let reader = new FileReader();
+          // reader.readAsDataURL(file);
+          // reader.onload = async (readerEvt) => {
+          //   try {
+          //     // const storage = fireStorage.getStorage();
+
+          //     // const snapshot = await fireStorage.uploadBytes(
+          //     //   fireStorage.ref(storage, file.name),
+          //     //   file
+          //     // );
+
+          //     // // const snapshot = await fireStorage.uploadString(
+          //     // //   fireStorage.ref(storage, file.name),
+          //     // //   btoa(readerEvt.target.result),
+          //     // //   "base64url"
+          //     // // );
+
+          //     // const uploadData = await storeUploadData(snapshot.ref);
+          //     // r.onSuccess(uploadData);
+          //     // r.lastUploads.push(uploadData);
+          //     // resolve(uploadData);
+
+          //     resolve(true);
+          //   } catch (err) {
+          //     reject(err);
+          //   }
+
+          //   r.busy = false;
+          // };
         });
       },
       // async submit(file) {

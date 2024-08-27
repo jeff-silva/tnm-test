@@ -22,6 +22,7 @@ export default () => {
       data.dimonaProductSlug = data.dimonaProductSlug ?? null;
       data.colors = data.colors ?? [];
       data.sizes = data.sizes ?? [];
+      data.prints = data.prints ?? [];
       return data;
     },
   });
@@ -33,11 +34,6 @@ export default () => {
   r.save = fire.firestoreSave({
     collection: "shop_product",
     data: DATA_DEFAULT,
-    thumbnail: fire.storageUpload({
-      onSuccess(uploadData) {
-        console.log(uploadData);
-      },
-    }),
   });
 
   r.delete = fire.firestoreDelete({

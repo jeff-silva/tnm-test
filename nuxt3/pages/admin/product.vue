@@ -20,6 +20,14 @@
           <v-text-field
             label="SKU"
             v-model="shopProduct.save.data.sku"
+            append-inner-icon="zondicons:bookmark-copy-2"
+            @click:append-inner="
+              () => {
+                shopProduct.save.data.sku = f.stringSlugify(
+                  shopProduct.save.data.name
+                );
+              }
+            "
           />
           <v-money
             label="Valor"
@@ -35,11 +43,15 @@
             type="sizes"
             v-model="shopProduct.save.data.sizes"
           />
-          <v-btn
-            block
-            @click="shopProduct.save.thumbnail.browse()"
-            >Upload</v-btn
-          >
+          <shop-product-attributes-edit
+            label="Estampas"
+            type="prints"
+            v-model="shopProduct.save.data.prints"
+          />
+          <v-firebase-upload
+            label="Thumbnail"
+            v-model="shopProduct.save.data.thumbnail"
+          />
 
           <br />
           <div class="d-flex justify-end ga-3">
@@ -117,6 +129,7 @@
 </template>
 
 <script setup>
+const f = useFormat();
 const dimonaProduct = useDimonaProduct();
 const shopProduct = useShopProduct();
 

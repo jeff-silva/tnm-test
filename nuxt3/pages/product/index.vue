@@ -6,9 +6,16 @@
           <v-col cols="3">
             <div class="rounded border">
               <div
-                class="bg-grey-lighten-3"
+                class="bg-grey-lighten-3 pa-2"
                 style="height: 300px"
-              ></div>
+              >
+                <img
+                  v-if="o.thumbnail"
+                  :src="o.thumbnail"
+                  alt=""
+                  style="width: 100%; height: 100%; object-fit: contain"
+                />
+              </div>
               <div class="pa-3">{{ o.name }}</div>
               <div class="d-flex ga-2">
                 <div class="flex-grow-1">

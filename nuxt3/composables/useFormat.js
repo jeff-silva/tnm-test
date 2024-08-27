@@ -15,6 +15,10 @@ export default () => {
     },
 
     stringSlugify(value) {
+      value = (value || "").toLowerCase().trim();
+      value = value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      value = value.replace(/[^a-z0-9\s-]/g, " ").trim();
+      value = value.replace(/[\s-]+/g, "-");
       return value;
     },
   };
