@@ -18,6 +18,7 @@ export default () => {
       data.slug = data.slug ?? null;
       data.sku = data.sku ?? null;
       data.thumbnail = data.thumbnail ?? null;
+      data.amount = data.amount ?? 0;
       data.active = data.active ?? null;
       data.dimonaProductSlug = data.dimonaProductSlug ?? null;
       data.colors = data.colors ?? [];

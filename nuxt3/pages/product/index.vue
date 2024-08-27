@@ -10,23 +10,38 @@
                 style="height: 300px"
               ></div>
               <div class="pa-3">{{ o.name }}</div>
-              <v-btn
-                block
-                text="Ver"
-                color="primary"
-                rounded="0"
-                :to="`/product/${o.sku}`"
-              />
+              <div class="d-flex ga-2">
+                <div class="flex-grow-1">
+                  <v-btn
+                    block
+                    text="Ver"
+                    color="primary"
+                    rounded="0"
+                    :to="`/product/${o.sku}`"
+                  />
+                </div>
+                <div class="flex-grow-1">
+                  <v-btn
+                    block
+                    text="Cart"
+                    color="primary"
+                    rounded="0"
+                    @click="shopCart.add(o)"
+                  />
+                </div>
+              </div>
             </div>
           </v-col>
         </template>
       </v-row>
+      <pre>shopCart: {{ shopCart }}</pre>
     </v-container>
   </nuxt-layout>
 </template>
 
 <script setup>
 const shopProduct = useShopProduct();
+const shopCart = useShopCart();
 
 onMounted(() => {
   shopProduct.list.submit();
