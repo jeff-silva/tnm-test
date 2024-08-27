@@ -28,6 +28,9 @@
           {
             text: 'Deletar',
             icon: 'mdi-delete',
+            onClick() {
+              list.remove(scope.item);
+            },
           },
         ]
       "
@@ -97,6 +100,8 @@ const list = reactive({
     emit("update:modelValue", list.items);
   },
   remove(item) {
+    const index = list.items.indexOf(item);
+    list.items.splice(index, 1);
     emit("update:modelValue", list.items);
   },
   set(items) {

@@ -1,5 +1,5 @@
 <template>
-  <v-table class="border">
+  <v-table>
     <colgroup>
       <template v-for="o in propsHeaders()">
         <col :width="o.width || '*'" />

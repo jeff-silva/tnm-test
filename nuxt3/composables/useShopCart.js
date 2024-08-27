@@ -22,7 +22,14 @@ export default () => {
       r.items.push({ quantity: 1, item });
     },
 
-    remove(item) {},
+    remove(item) {
+      for (let i in r.items) {
+        const o = r.items[i];
+        if (o.item.id == item.id) {
+          r.items.splice(i, 1);
+        }
+      }
+    },
 
     productExists(item) {
       const itemExists = r.items.filter((o) => o.item.id == item.id);

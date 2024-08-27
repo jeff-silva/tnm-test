@@ -41,7 +41,6 @@
           </v-col>
         </template>
       </v-row>
-      <pre>shopCart: {{ shopCart }}</pre>
     </v-container>
   </nuxt-layout>
 </template>

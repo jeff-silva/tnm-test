@@ -21,7 +21,8 @@
       :loading="dimonaProduct.find.busy"
     >
       <div class="text-center font-weight-bold bg-success py-5">
-        Preço Dimona: R$ {{ dimonaProduct.find.response.price }}
+        Preço Dimona: R$
+        {{ f.numberToMoney(dimonaProduct.find.response.price) }}
       </div>
       <!-- <v-card-text>
         <v-row>
@@ -72,6 +73,8 @@
 const props = defineProps({
   modelValue: { type: [Number, Object], default: null },
 });
+
+const f = useFormat();
 
 const emit = defineEmits(["update:modelValue", "update:attributes"]);
 
