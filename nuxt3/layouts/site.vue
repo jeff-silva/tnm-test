@@ -2,7 +2,13 @@
   <v-app>
     <div
       class="bg-grey-lighten-4"
-      style="height: 100vh; overflow: auto"
+      style="
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        height: 100vh;
+        overflow: auto;
+      "
     >
       <div class="bg-white">
         <v-container class="d-flex align-center">
@@ -17,7 +23,7 @@
               variant="plain"
             />
             <v-btn
-              text="Produtos"
+              text="Busca"
               to="/product"
               variant="plain"
             />
@@ -29,9 +35,58 @@
           </div>
         </v-container>
       </div>
-      <br />
 
-      <slot></slot>
+      <div style="flex-grow: 1; overflow: auto">
+        <div style="min-height: calc(100vh - 340px)">
+          <slot></slot>
+        </div>
+
+        <div class="bg-grey-lighten-2 py-6">
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <div>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Aspernatur magnam laudantium, dolores porro nulla quo
+                  obcaecati. Error libero assumenda laborum, alias, perferendis
+                  enim dolores, natus ab ipsum hic at asperiores!
+                </div>
+              </v-col>
+
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <div>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Aspernatur magnam laudantium, dolores porro nulla quo
+                  obcaecati. Error libero assumenda laborum, alias, perferendis
+                  enim dolores, natus ab ipsum hic at asperiores!
+                </div>
+              </v-col>
+
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <div>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Aspernatur magnam laudantium, dolores porro nulla quo
+                  obcaecati. Error libero assumenda laborum, alias, perferendis
+                  enim dolores, natus ab ipsum hic at asperiores!
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </div>
+
+        <div class="bg-black text-center">
+          <v-container> &copy; 2024 - Todos Negros do Mundo </v-container>
+        </div>
+      </div>
 
       <!-- <v-navigation-drawer
         :model-value="true"

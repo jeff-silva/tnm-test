@@ -29,7 +29,13 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     directives,
 
     // https://vuetifyjs.com/en/features/global-configuration/#setup
-    defaults: {},
+    defaults: {
+      VContainer: {
+        style: {
+          maxWidth: "1200px",
+        },
+      },
+    },
 
     icons: {
       defaultSet: "iconify",
